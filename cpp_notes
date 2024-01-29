@@ -1,0 +1,5 @@
+To Compile Code:
+g++ -o <desired executable file name> <cpp file name>
+
+To Execute Program:
+./<executable file name>
