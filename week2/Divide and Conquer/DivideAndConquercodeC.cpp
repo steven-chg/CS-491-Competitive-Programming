@@ -68,7 +68,7 @@ int main(){
         totalDamage += kEstimate;
 
         while(totalDamage < damageRequired){
-            // get the new kEstimate (find how many attacks more is needed assuming that all attacks can last for the same amount longer)
+            // get the new kEstimate (find how many attacks more is needed assuming that all attacks can last for the same amount longer; this is the minimum new kEstimate)
             kEstimate += (damageRequired - totalDamage + numAttacks - 1)/numAttacks;
 
             // reset totalDamage to 0 and then go through the loop to get the new kEstimate
