@@ -53,7 +53,7 @@ int main(){
 
     // retrieve number of nodes and number of edges
     long long int numNodes, numEdges;
-    cin >> numNodes >> numEdges;\
+    cin >> numNodes >> numEdges;
 
     // declare a 2D vector to store the node #'s that each node is connected to; numNodes + 1 in 'row' dimension (+1 for ease of index)
     vector< vector<long long int> > adjacencyMatrix(numNodes + 1);
@@ -92,13 +92,16 @@ int main(){
         long int numConnectedTwo = 0; long int numConnectedOne = 0; long int mostConnections = 0;
 
         for(int nodeNum = 1; nodeNum <= numNodes; nodeNum++){
+            // check for nodes connected to 1 other node
             if(adjacencyMatrix[nodeNum].size() == 1){
                 numConnectedOne++;
                 if(mostConnections < 1) mostConnections = adjacencyMatrix[nodeNum].size();
             } else if(adjacencyMatrix[nodeNum].size() == 2){
+            // check for nodes connected to 2 other nodes
                 numConnectedTwo++;
                 if(mostConnections < 2) mostConnections = adjacencyMatrix[nodeNum].size();
             } else{
+            // check for nodes connected to more than 2 other nodes (cannot be 0 since graph is connected)
                 mostConnections = adjacencyMatrix[nodeNum].size();
             }
         }
