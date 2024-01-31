@@ -3,3 +3,9 @@ g++ -o <desired executable file name> <cpp file name>
 
 To Execute Program:
 ./<executable file name>
+
+Code Snippet for Competitive Programming:
+- Cmd + Shift + P 
+- Type in "Snippets: Configure User Snippets"
+- Select c++ (Search Code Snippet Generator Online for JSON Format)
+- Currently Set Up Headers; Type "cpbase" 
