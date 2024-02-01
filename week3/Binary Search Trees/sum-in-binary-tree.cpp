@@ -22,7 +22,30 @@ Output: For each test case, print one integer — the desired sum.
 */
 
 int main(){
+    // retrieve number of test cases
+    int testCases;
+    scanf("%d", &testCases);
+    
+    // loop for number of test cases
+    while(testCases){
+        // retrieve the desired vertex in current case
+        long long int desiredVertex;
+        scanf("%lld", &desiredVertex);
 
+        // initialize a running sum to 0
+        long long int runningSum = 0;
 
+        // note a characteristic of this tree: to get to parent node, we just divide the value of current node by 2 (floor it)
+        while(desiredVertex > 1){
+            runningSum += desiredVertex;
+            desiredVertex /= 2;
+        }
 
+        // add the root node
+        runningSum += 1;
+
+        printf("%lld\n", runningSum);
+
+        testCases--;
+    }
 }

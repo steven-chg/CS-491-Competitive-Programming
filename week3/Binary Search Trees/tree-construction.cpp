@@ -24,7 +24,7 @@ Output: Output 𝑛−1 integers. For all 𝑖>1 print the value written in the 
 */
 
 // define binary search tree struct
-template<typename T>
+template <typename T>
 struct binarySearchTree{
     T value;
     binarySearchTree<T> *left, *right;
@@ -37,20 +37,36 @@ struct binarySearchTree{
 };
 
 // function for adding a new node to the tree
-template<typename T>
-void addNode(binarySearchTree<T>* root, long long int value){
+template <typename T>
+binarySearchTree<T>* addNode(binarySearchTree<T>* root, T value){
     bool notYetInserted = true;
-    while(notYetInserted)
-        // check if right child exists and right child has value that is less than new value
-        if(root->right != NULL && root->right->value < value){
-            // go right
-        else if(root->left != NULL && root->left->value > value){
-        // check if the left child exists and left child has value that is greater than new value
+    while(notYetInserted){
+        // check current node value to see if we should go left or right
+        if(root->value < value){
+            // check if right child exists, if not, then insert here
+            if(root->right == NULL){
+                root->right = new binarySearchTree<T>(value);
+                notYetInserted = false;
+            } else{
+            // if right child exists, then we move to the right child
+                root = root->right;
+            }
+        } else{
+            // check if left child exists, if not, then insert here
+            if(root->left == NULL){
+                root->left = new binarySearchTree<T>(value);
+                notYetInserted = false;
+            } else{
+            // if left child exists, then we move to the left child
+                root = root->left;
+            }
         }
     }
+    // return the parent pointer
+    return root;
 }
 
-template<typename T>
+/* FIRST OPTIMIZATION; Store pointer to biggest and smallest value nodes; pass pointers to those nodes to add new nodes with values bigger or smaller, respectively */
 int main(){
     // retrieve the length of the sequence 
     int sequenceLength;
@@ -59,18 +75,78 @@ int main(){
     // create the root node 
     long long int rootNodeValue;
     cin >> rootNodeValue;
-    binarySearchTree<T> rootNode = binarySearchTree<T>(rootNodeValue);
+    binarySearchTree<long long int> rootNode = binarySearchTree<long long int>(rootNodeValue);
+
+    // FIRST OPTIMIZATION, declare pointers to the greatest and smallest value node and initialize them to point to root node
+    binarySearchTree<long long int> *smallestNode = &rootNode;
+    binarySearchTree<long long int> *biggestNode = &rootNode;
 
     // loop for the remaining n - 1 elements and add them to the tree 
-    for(int elementNum = 1; elementNum < sequenceLength; elementNum++){
+    for(int elementNum = 2; elementNum <= sequenceLength; elementNum++){
+        // retrieve the next value
         long long int newValue;
         cin >> newValue;
-        addNode(&rootPointer, newValue);    // pass by pointer
+
+        // declare a pointer to store pointer to parent node of the newly created node
+        binarySearchTree<long long int> *parentPointer;
+
+        // FIRST OPTIMIZATION, check if new value is smaller than the smallest value node or greater than the greatest value node
+        if(newValue > biggestNode->value){
+            parentPointer = addNode(biggestNode, newValue);
+            biggestNode = parentPointer->right;
+        } else if(newValue < smallestNode->value){
+            parentPointer = addNode(smallestNode, newValue);
+            smallestNode = parentPointer->left;
+        } else{
+            parentPointer = addNode(&rootNode, newValue);
+        }
+
+        // print the value of the parent
+        printf("%lld ", parentPointer->value);
     }
 
-    // at this point, rootPointer points to the root node of the entire tree that has finished construction
-
-
-
-
+    printf("\n");
 }
+
+// /* NON OPTIMIZED BASE CODE */
+// int main(){
+//     // retrieve the length of the sequence 
+//     int sequenceLength;
+//     cin >> sequenceLength;
+
+//     // create the root node 
+//     long long int rootNodeValue;
+//     cin >> rootNodeValue;
+//     binarySearchTree<long long int> rootNode = binarySearchTree<long long int>(rootNodeValue);
+
+//     /* DO NOT NEED TO STORE; JUST PRINT DIRECTLY */
+//     // // declare a vector to store parent node values
+//     // vector<long long int> parentNodeValues;
+
+//     // loop for the remaining n - 1 elements and add them to the tree 
+//     for(int elementNum = 2; elementNum <= sequenceLength; elementNum++){
+//         // retrieve the next value
+//         long long int newValue;
+//         cin >> newValue;
+
+//         // declare a pointer to store pointer to parent node of the newly created node
+//         binarySearchTree<long long int> *parentPointer;
+//         parentPointer = addNode(&rootNode, newValue);           // pass by pointer
+
+//         /* REPLACED STORING INTO VECTOR */
+//         // print the value of the parent
+//         printf("%lld ", parentPointer->value);
+
+//         /* DO NOT NEED TO STORE; JUST PRINT DIRECTLY */
+//         // // retrieve parent node value and store it into vector
+//         // parentNodeValues.push_back(parentPointer->value);
+//     }
+
+//     /* DO NOT NEED TO STORE; JUST PRINT DIRECTLY */
+//     // // loop through the parent node value vector and print out the values
+//     // for(int parentNum = 2; parentNum <= sequenceLength; parentNum++){
+//     //     printf("%lld ", parentNodeValues[parentNum - 2]);
+//     // }
+
+//     printf("\n");
+// }
