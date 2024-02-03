@@ -25,6 +25,9 @@ Output: For each test case you should output a single integer — the minimal nu
 
 int main(){
 
+
+
+
 }
 
 
