@@ -30,7 +30,23 @@ Output: In a single line print the minimal number of passwords, the use of which
 */
 
 int main(){
+    // retrieve number of passwords
+    long long int numPasswords;
+    cin >> numPasswords;
 
+
+    while(numPasswords){
+        // retrieve the current password
+        string currentPassword;
+        cin >> currentPassword;
+
+
+
+
+
+
+        numPasswords--;
+    }
     
 
 }
