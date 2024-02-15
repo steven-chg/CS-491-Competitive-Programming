@@ -112,43 +112,43 @@ int main(){
         for(int i = 0; i < 4; i++){
             switch(i){
                 case 0:
-                    // attempt to move left
+                    // attempt to move left; check bounds and make sure that cell hasn't been visited yet and isn't a Tree
                     if(col <= 0) break;
                     if(distance[row][col - 1] == 1e6 && forest[row][col - 1] != 'T'){
                         distance[row][col - 1] = distance[row][col] + 1;
                         bfsOrder.push(make_pair(row, col - 1));
                     }
-
+                    // if left cell is Start position, set the distance from your breeder to Exit
                     if(forest[row][col - 1] == 'S') breederDistance = distance[row][col - 1];
 
                 case 1:
-                    // attempt to move right
+                    // attempt to move right; check bounds and make sure that cell hasn't been visited yet and isn't a tree
                     if(col >= numCol - 1) break;
                     if(distance[row][col + 1] == 1e6 && forest[row][col + 1] != 'T'){
                         distance[row][col + 1] = distance[row][col] + 1;
                         bfsOrder.push(make_pair(row, col + 1));
                     }
-
+                    // if right cell is Start position, set the distance from your breeder to Exit
                     if(forest[row][col + 1] == 'S') breederDistance = distance[row][col + 1];
 
                 case 2:
-                    // attempt to move up
+                    // attempt to move up; check bounds and make sure that cell hasn't been visited yet and isn't a tree
                     if(row <= 0) break;
                     if(distance[row - 1][col] == 1e6 && forest[row - 1][col] != 'T'){
                         distance[row - 1][col] = distance[row][col] + 1;
                         bfsOrder.push(make_pair(row - 1, col));
                     }
-
+                    // if up cell is Start position, set the distance from your breeder to Exit
                     if(forest[row - 1][col] == 'S') breederDistance = distance[row - 1][col];
 
                 case 3:
-                    // attempt to move down
+                    // attempt to move down; check bounds and make sure that cell hasn't been visited yet and isn't a tree
                     if(row >= numRow - 1) break;
                     if(distance[row + 1][col] == 1e6 && forest[row + 1][col] != 'T'){
                         distance[row + 1][col] = distance[row][col] + 1;
                         bfsOrder.push(make_pair(row + 1, col));
                     }  
-
+                    // if down cell is Start position, set the distance from your breeder to Exit
                     if(forest[row + 1][col] == 'S') breederDistance = distance[row + 1][col];
 
             }
@@ -161,6 +161,7 @@ int main(){
     ll numBattles = 0;
     for(ll rowNum = 0; rowNum < numRow; rowNum++){
         for(ll colNum = 0; colNum < numCol; colNum++){
+            // make sure that cell contains a number 0-9 and has a distance less than or equal to the distance your breeder is to the exit; then add number of other breeders in that cell
             if((forest[rowNum][colNum] - '0') >= 0 && (forest[rowNum][colNum] - '0') <= 9 && distance[rowNum][colNum] <= breederDistance){
                 numBattles += forest[rowNum][colNum] - '0';
             }
