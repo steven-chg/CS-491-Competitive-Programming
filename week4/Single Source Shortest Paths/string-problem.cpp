@@ -126,6 +126,9 @@ int main(){
 
     // now characterPairs includes all character pairs that need to be transformed
 
+    // declare a vector that tracks whether each variable has a transition into it
+    vector<int> letterTo(26, 0);
+
     // retrieve the edges and form the graph structure
     graph graphStructure;
     ll numChangings;
@@ -133,6 +136,8 @@ int main(){
     for(ll changeNum = 0; changeNum < numChangings; changeNum++){
         char to, from; ll weight;
         cin >> from >> to >> weight;
+        // mark this letter as having an edge pointing to it
+        letterTo[to - 'a'] = 1;
         Edge currentEdge = {to, weight};
         graphStructure[from].push_back(currentEdge);
     }
@@ -142,40 +147,52 @@ int main(){
 
     /* VERIFIED characterPairs and graphStructures stores what we want */
 
+    // declare 2D vector to store transition costs from every letter to every letter
+    vector< vector<ll> > pairCostVector(26);
+
+    char alphabets[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+    // perform dijkstras on every single pair of possible letters
+    for(int i = 0; i < 26; i++){
+        for(int j = 0; j < 26; j++){
+            char source = alphabets[i]; char destination = alphabets[j];
+            ll pairCost = dijkstra(graphStructure, source, destination);
+            if(pairCost == -1){
+                // if result of dijkstra's is -1, it means there is no possible transition from source to destination
+                pairCostVector[i].push_back(1e6);
+            } else{
+                // else, store the cost to transition from source to destination
+                pairCostVector[i].push_back(pairCost);
+            }
+        }
+    }
+
+    /* at this point, pairCostVector stores the least cost to transition from every single letter to every single letter */
+
     ll totalCost = 0;
-    // we need to perform dijkstra's characterPairs.size()*2 times (use a double for loop)
-    // (characterPairs.size() is the number of pairs of unmatching characters; need to times 2 because we can change from char a to b or char b to a given a and b don't match)
+    // go through every single pair of disagreeing characters
     for(ll iteration = 0; iteration < characterPairs.size(); iteration++){
         ll leastCostCurrentPair = -1;
         char currentPairResultChar;
-        for(ll i = 0; i < 2; i++){
-            char source, destination;
-            if(i == 0){
-                source = characterPairs[iteration].first;
-                destination = characterPairs[iteration].second;
-            } else if(i == 1){
-                source = characterPairs[iteration].second;
-                destination = characterPairs[iteration].first;
+
+        // get the two letters that we need to be in agreement
+        char firstLetter = characterPairs[iteration].first;
+        char secondLetter = characterPairs[iteration].second;
+
+        // loop through all 26 possible letters we can change it to
+        for(ll i = 0; i < 26; i++){
+            char targetLetter = alphabets[i];
+            
+            ll costOne = pairCostVector[firstLetter - 'a'][targetLetter - 'a'];
+            ll costTwo = pairCostVector[secondLetter - 'a'][targetLetter - 'a'];
+            ll totalCurrentCost = costOne + costTwo;
+
+            if(leastCostCurrentPair == -1 && totalCurrentCost >= 0 && totalCurrentCost < 1e6){
+                leastCostCurrentPair = totalCurrentCost;
+                currentPairResultChar = targetLetter;
+            } else if(leastCostCurrentPair >= 0 && totalCurrentCost >= 0 && totalCurrentCost < leastCostCurrentPair){
+                leastCostCurrentPair = totalCurrentCost;
+                currentPairResultChar = targetLetter;
             }
-
-            // cout << "source " << source << " destination " << destination << endl;
-
-            // perform dijkstra's algorithm to find shortest path between each pair of characters (source and destination)
-            ll currentCost = dijkstra(graphStructure, source, destination);
-
-            // cout << " working on pair " << iteration << " attempt " << i << " cost " << currentCost << endl;
-
-            // update the minimum cost for transformation of current pair of characters (also update the resulting character)
-            // found the first possible path
-            if(leastCostCurrentPair == -1 && currentCost >= 0){
-                leastCostCurrentPair = currentCost;
-                currentPairResultChar = destination;
-            // if there already exists a possible path, but there is a better path in the opposite direction
-            } else if(leastCostCurrentPair >= 0 && currentCost != -1 && currentCost < leastCostCurrentPair){
-                leastCostCurrentPair = currentCost;
-                currentPairResultChar = destination;
-            }
-
         }
 
         // if this current pair of characters cannot be transformed to each other, then it is impossible to get 2 identical strings
