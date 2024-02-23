@@ -31,103 +31,84 @@ int main(){
         ll numDepots, maxBags;
         cin >> numDepots >> maxBags;
 
+        // vectors that will store magnitudes of distances on each side (distance positive on right side, negative on left side)
         vector<ll> positiveDistance;
         vector<ll> negativeDistance;
 
         for(int depot = 0; depot < numDepots; depot++){
             ll currentDepotDistance;
             cin >> currentDepotDistance;
-            // split into positive and negative distances (store their magnitude and ignore depots at position 0)
+            // split into positive (right) and negative (left) (store their magnitude and ignore depots at position 0)
             if(currentDepotDistance > 0) positiveDistance.push_back(currentDepotDistance);
             else if(currentDepotDistance < 0) negativeDistance.push_back(abs(currentDepotDistance));
         }
 
-        // sort the distances in ascending order 
-        sort(positiveDistance.begin(), positiveDistance.end(), less<ll>());
-        sort(negativeDistance.begin(), negativeDistance.end(), less<ll>());
+        // sort the distances in descending order 
+        sort(positiveDistance.begin(), positiveDistance.end(), greater<ll>());
+        sort(negativeDistance.begin(), negativeDistance.end(), greater<ll>());
 
         // find which side we want our final delivery to be (whichever value is greater)
-        ll finalDeliveryPos = 0, finalDeliveryNeg = 0;          /* NEED TO INITIALIZE OR ELSE MIGHT CARRY RANDOM VALUE IN */
-        if(positiveDistance.size() != 0) finalDeliveryPos = positiveDistance[positiveDistance.size() - 1];
-        if(negativeDistance.size() != 0) finalDeliveryNeg = negativeDistance[negativeDistance.size() - 1];
+        ll finalDeliveryPos = 0, finalDeliveryNeg = 0;                                          /* NEED TO INITIALIZE OR ELSE MIGHT CARRY RANDOM VALUE IN */
+        if(positiveDistance.size() != 0) finalDeliveryPos = positiveDistance[0];
+        if(negativeDistance.size() != 0) finalDeliveryNeg = negativeDistance[0];
 
         ll totalDistance = 0;
+        // find number of delivery runs needed on each side
         ll numDeliveriesPos = ceil((positiveDistance.size() + maxBags - 1)/ maxBags);
         ll numDeliveriesNeg = ceil((negativeDistance.size() + maxBags - 1) / maxBags);
 
         // cout << numDeliveriesPos << endl;
         // cout << numDeliveriesNeg << endl;
 
-        // if finalDeliveryPos > finalDeliveryNeg, then it means our final delivery should be to the right side, vice versa
+        /* Notes:
+        - start with the final delivery on each side, then work slowly backwards (closer and closer to origin)
+        */
+
+        // if finalDeliveryPos >= finalDeliveryNeg, then it means our final delivery should be to the right side, vice versa
         if(finalDeliveryPos >= finalDeliveryNeg){
             // find total delivery distance for positive side
-            ll currentPosIndex = maxBags - 1;
-            for(int posDeliveryNum = 0; posDeliveryNum < numDeliveriesPos; posDeliveryNum++){
-                if(posDeliveryNum != (numDeliveriesPos - 1) && posDeliveryNum != (numDeliveriesPos - 2)){
-                    // not last or 2nd to last delivery
+            ll currentPosIndex = 0;
+            for(int posDeliveryNum = numDeliveriesPos; posDeliveryNum > 0; posDeliveryNum--){
+                if(posDeliveryNum == numDeliveriesPos){
+                    //final delivery (furthest delivery)
+                    totalDistance += positiveDistance[currentPosIndex];
+                    currentPosIndex += maxBags;
+                } else {
+                    // not the final delivery
                     totalDistance += 2*positiveDistance[currentPosIndex];
                     currentPosIndex += maxBags;
-                } else if(posDeliveryNum == (numDeliveriesPos - 2)){
-                    // second to last delivery
-                    totalDistance += 2*positiveDistance[positiveDistance.size() - 1 - maxBags];
-                } else{
-                    // last delivery
-                    totalDistance += positiveDistance[positiveDistance.size() - 1];
                 }
             }
 
             // find total delivery distance for negative side
-            ll currentNegIndex = maxBags - 1;
-            for(int negDeliveryNum = 0; negDeliveryNum < numDeliveriesNeg; negDeliveryNum++){
-                if(negDeliveryNum != (numDeliveriesNeg - 1) && negDeliveryNum != (numDeliveriesNeg - 2)){
-                    // not last or 2nd to last delivery
-                    totalDistance += 2*negativeDistance[currentNegIndex];
-                    currentNegIndex += maxBags;
-                } else if(negDeliveryNum == (numDeliveriesNeg - 2)){
-                    // second to last delivery
-                    totalDistance += 2*negativeDistance[negativeDistance.size() - 1 - maxBags];
-                } else{
-                    // last delivery
-                    totalDistance += 2*negativeDistance[negativeDistance.size() - 1];
-                }
+            ll currentNegIndex = 0;
+            for(int negDeliveryNum = numDeliveriesNeg; negDeliveryNum > 0; negDeliveryNum--){
+                totalDistance += 2*negativeDistance[currentNegIndex];
+                currentNegIndex += maxBags;
             }
 
-        } else if (finalDeliveryNeg > finalDeliveryPos) {
+        } else{
             // find total delivery distance for positive side
-            ll currentPosIndex = maxBags - 1;
-            for(int posDeliveryNum = 0; posDeliveryNum < numDeliveriesPos; posDeliveryNum++){
-                if(posDeliveryNum != (numDeliveriesPos - 1) && posDeliveryNum != (numDeliveriesPos - 2)){
-                    // not last or 2nd to last delivery
-                    totalDistance += 2*positiveDistance[currentPosIndex];
-                    currentPosIndex += maxBags;
-                } else if(posDeliveryNum == (numDeliveriesPos - 2)){
-                    // second to last delivery
-                    totalDistance += 2*positiveDistance[positiveDistance.size() - 1 - maxBags];
-                } else{
-                    // last delivery
-                    totalDistance += 2*positiveDistance[positiveDistance.size() - 1];
-                }
+            ll currentPosIndex = 0;
+            for(int posDeliveryNum = numDeliveriesPos; posDeliveryNum > 0; posDeliveryNum--){
+                totalDistance += 2*positiveDistance[currentPosIndex];
+                currentPosIndex += maxBags;
             }
 
             // find total delivery distance for negative side
-            ll currentNegIndex = maxBags - 1;
-            for(int negDeliveryNum = 0; negDeliveryNum < numDeliveriesNeg; negDeliveryNum++){
-                if(negDeliveryNum != (numDeliveriesNeg - 1) && negDeliveryNum != (numDeliveriesNeg - 2)){
-                    // not last or second to last delivery
+            ll currentNegIndex = 0;
+            for(int negDeliveryNum = numDeliveriesNeg; negDeliveryNum > 0; negDeliveryNum--){
+                if(negDeliveryNum == numDeliveriesNeg){
+                    //final delivery (furthest delivery)
+                    totalDistance += negativeDistance[currentNegIndex];
+                    currentNegIndex += maxBags;
+                } else{
+                    // not the final delivery
                     totalDistance += 2*negativeDistance[currentNegIndex];
                     currentNegIndex += maxBags;
-                } else if(negDeliveryNum == numDeliveriesNeg - 2){
-                    // second to last delivery
-                    totalDistance += 2*negativeDistance[negativeDistance.size() - 1 - maxBags];
-                } else{
-                    // last delivery
-                    totalDistance += negativeDistance[negativeDistance.size() - 1];
                 }
             }
         }
-
-        cout << totalDistance;
-
+        cout << totalDistance << endl;
     }
-
 }
