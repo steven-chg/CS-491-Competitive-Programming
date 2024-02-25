@@ -25,6 +25,54 @@ On the second line print the sequence of the indices of the any maximum length s
 increasing sequence of consecutive integers.
 */
 
+int main(){
+    ll arrayLength;
+    cin >> arrayLength;
+
+    /* Notes:
+    - use a map to store the max. subsequence length ending at each value 
+    - where key = ending value & value = max. subsequence length ending at the key value
+    - we can correctly find the max. subsequence length by going through the array in order
+    then setting map[ending value] = map[ending value - 1] + 1
+    */
+
+    vector<ll> array(arrayLength);
+    map<ll, ll> maxSubsequenceLength;
+
+    for(int i = 0; i < arrayLength; i++){
+        cin >> array[i];
+    } 
+
+    ll maxLength = 1;
+    // track the ending value of the subsequence with maximum length 
+    ll maxValue = -1;
+    for(int i = 0; i < arrayLength; i++){
+        maxSubsequenceLength[array[i]] = maxSubsequenceLength[array[i] - 1] + 1;
+        // update maximum length of possible consecutive subsequence and its ending value when appropriate
+        if(maxSubsequenceLength[array[i]] > maxLength){
+            maxLength = maxSubsequenceLength[array[i]];
+            maxValue = array[i];
+        }
+    }
+
+    cout << maxLength << endl;
+
+    // if maximum subsequence length is 1, then just return index 1
+    if(maxLength == 1){
+        cout << "1" << endl;
+    } else{
+        // else, find the starting value of the subsequence and loop through the array to find indices
+        ll currentValue = maxValue - maxLength + 1;
+        for(int i = 0; i < arrayLength; i++){
+            if(currentValue == array[i]){
+                cout << (i + 1) << " ";
+                currentValue++;
+            }
+            if(currentValue > maxValue) break;
+        }
+        cout << endl;
+    }
+}
 
 /* DOES NOT ACCOUNT FOR ARRAYS LIKE 2 1 1 1 1 2 */
 // int main(){
@@ -38,7 +86,6 @@ increasing sequence of consecutive integers.
 //     */
 
 //     // store both the value and the original index position of the value in a vector
-//     set<ll> appearedValue;
 //     vector< pair<ll, ll> > array(arrayLength + 1);
 
 //     for(int i = 1; i <= arrayLength; i++){
@@ -48,10 +95,6 @@ increasing sequence of consecutive integers.
 
 //     // sort in ascending order by the value of the array
 //     sort(array.begin(), array.end());
-
-//     // for(int i = 1; i <= arrayLength; i++){
-//     //     cout << array[i].first;
-//     // }
 
 //     ll maxLengthSubsequence = 1;
 //     ll indexStartMaxSubsequence;
@@ -74,13 +117,6 @@ increasing sequence of consecutive integers.
 //         } else{
 //             // this next value isn't a part of the subsequence, 
 //             if((array[i].first != previousVal + 1) || (previousIndex > array[i].second)){
-//                 // BUT it is possible that a value(s) further down the line is a part of the subsequence
-//                 // we need to continue checking until we reach a value that ISN'T equal to the previous value 
-//                 for(int j = i; j <= arrayLength; j++){
-                    
-//                 }
-
-
 //                 // update the maxLengthSubsequence if appropriate 
 //                 if(localMaxLength > maxLengthSubsequence){
 //                     maxLengthSubsequence = localMaxLength;
