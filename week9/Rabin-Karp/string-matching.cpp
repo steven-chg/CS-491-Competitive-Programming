@@ -35,6 +35,8 @@ int main(){
     ll hash_original2 = 0;
     ll hash_desired = 0;
     ll hash_desired2 = 0;
+
+    // find the desired hash of the desired string and original hashes starting at index 0 in original string
     for(int i = 0; i < desired.size(); i++){
         hash_original = (hash_original*a + original[i]) % b;
         hash_original2 = (hash_original2*a + original[i]) % b2;
@@ -46,6 +48,7 @@ int main(){
         }
     }
 
+    // loop through and check all possible matches of the desired string in the original string
     ll running_sum = 0;
     for(int i = 0; i <= original.size() - desired.size(); i++){
         if(hash_original == hash_desired && hash_original2 == hash_desired2){
