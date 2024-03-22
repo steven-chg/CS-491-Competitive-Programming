@@ -33,15 +33,15 @@ int main(){
         ll n;
         cin >> n;
 
-        // find the index of the most significant 1 bit of the binary representation of n (1 indexed)
+        // find the index of the most significant 1 bit of the binary representation of n (0 indexed)
         ll largestIndex = 0;
-        while(n > 0){
+        while(n > 1){
             n = n >> 1;
             largestIndex++;
         }
         
-        // find the 2^(largestIndex -1), which is the largest power of 2 value that is less than or equal to n, then subtract that by 1 to get max k
-        ll maxK = (1 << (largestIndex-1)) - 1;
+        // find the 2^(largestIndex), which is the largest power of 2 value that is less than or equal to n, then subtract that by 1 to get max k
+        ll maxK = (1 << (largestIndex)) - 1;
 
         cout << maxK << endl;
     }  
