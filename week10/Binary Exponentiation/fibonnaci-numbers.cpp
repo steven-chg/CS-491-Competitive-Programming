@@ -63,6 +63,7 @@ int main(){
             // call exponent to raise matrix {{1, 1}, {1, 0}} to the nth power
             exponent(matrix, n, modulo);
             // result will be stored in first row, first column 
+            // (technically matrix^n will store Fn+1 in first row and first column, but since we're using the convention where F0 = F1 = 1, Fn is stored in first row and first column)
             cout << matrix[0][0] << endl;      
         }
     }
