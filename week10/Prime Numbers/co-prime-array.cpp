@@ -24,16 +24,49 @@ Also the new array should be got from the original array a by adding k elements 
 If there are multiple answers you can print any one of them.
 */
 
+// helper function to find the greatest common divisor between two numbers
+int greatestCommonDivisor(ll valueOne, ll valueTwo){
+    if(valueTwo > valueOne) return greatestCommonDivisor(valueTwo, valueOne);
+    if(valueTwo > 0) return greatestCommonDivisor(valueTwo, valueOne % valueTwo);
+    else return valueOne;
+}
+
 int main(){
     ll n;
     cin >> n;
 
-    // retrieve the initial array
     vector<ll> arrayValues;
+    // track previous values and additional integers needed to make the array co-prime
+    ll previousValue;
+    ll additionalIntegers = 0;
+
+    // retrieve values in the array one by one and add in '1' if necessary (if previous number and current number are NOT co-primes)
     for(int integerNum = 0; integerNum < n; integerNum++){
-        ll value; 
+        ll value;
         cin >> value;
-        arrayValues.push_back(value);
+
+        // first value in the array, so just push it into the array
+        if(integerNum == 0){
+            arrayValues.push_back(value);
+        } else if(greatestCommonDivisor(previousValue, value) == 1){
+        // case where previous value and current value is co-prime (can just push this new value onto the array)
+            arrayValues.push_back(value);
+        } else if(greatestCommonDivisor(previousValue, value) > 1){
+        // case where the previous value and current value are NOT co-primes, so we push a '1' first (since '1' is co-prime with any positive integer)
+            arrayValues.push_back(1);
+            arrayValues.push_back(value);
+            additionalIntegers++;
+        }
+
+        // update the previous value in the end
+        previousValue = value;
     }
+
+    // output the results
+    cout << additionalIntegers << endl;
+    for(int i = 0; i < arrayValues.size(); i++){
+        cout << arrayValues[i] << " ";
+    }
+    cout << endl;
 
 }
