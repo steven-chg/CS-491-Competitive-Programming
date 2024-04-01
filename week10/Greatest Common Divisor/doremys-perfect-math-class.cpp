@@ -26,6 +26,46 @@ It is guaranteed that the sum of 𝑛 over all test cases does not exceed 2⋅10
 Output: For each test case, you need to output the maximum possible number of integers in 𝑆. It can be proven that this value is finite.
 */
 
-int main(){
+// helper function to find the greatest common divisor between two numbers
+int greatestCommonDivisor(ll valueOne, ll valueTwo){
+    if(valueTwo > valueOne) return greatestCommonDivisor(valueTwo, valueOne);
+    if(valueTwo > 0) return greatestCommonDivisor(valueTwo, valueOne % valueTwo);
+    else return valueOne;
+}
 
+int main(){
+    ll numCases;
+    cin >> numCases;
+
+    for(int caseNum = 0; caseNum < numCases; caseNum++){
+        ll setSize;
+        cin >> setSize;
+
+        // retrieve the original integer set and find the greatest common divisor of all the values in the set
+        ll gcd;
+        ll largestVal;
+        for(int i = 0; i < setSize; i++){
+            ll newVal;
+            cin >> newVal;
+
+            // if its the first integer, then just set the gcd to this new value
+            if(i == 0){
+                gcd = newVal;
+            }
+            else{
+            // else, we need to find the new gcd of the integer set
+                gcd = greatestCommonDivisor(gcd, newVal);
+            }
+
+            // keep track of the largest value in the original integer set
+            if(i == setSize - 1) largestVal = newVal;
+        }
+
+        /* Note:
+        - find the greatest common divisor of all the values in the original integer set 
+        - possible values that can be within the set are any multiples of the GCD less than or equal to the largest value
+        */
+
+        cout << largestVal / gcd << endl;
+    }
 }
