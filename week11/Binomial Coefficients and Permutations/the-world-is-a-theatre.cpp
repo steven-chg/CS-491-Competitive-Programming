@@ -24,6 +24,8 @@ It is preferred to use cin, cout streams or the %I64d specificator.
 ll combinations(ll n, ll k){
     ll result = 1;
     for(ll i = 1; i <= k; i++){
+        // this formula is derived where the numerator takes into account some terms in n! cancel out with terms in (n-k)! 
+        // (specifically the (n-k)! terms all cancel out, so numerator starts from (n - k + 1) up to (n - k + k, or n)); denominator is just k!
         result = result * (n - k + i) / i;
     }
     return result;
