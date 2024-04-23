@@ -27,24 +27,24 @@ You can print each letter in any case (upper or lower).
 */
 
 int main(){
-    long double n, d;
+    int n, d;
     cin >> n >> d;
 
     int numGrassHoppers;
     cin >> numGrassHoppers;
     for(int grassHopper = 0; grassHopper < numGrassHoppers; grassHopper++){
-        long double x, y;
+        int x, y;
         cin >> x >> y;
 
         /* Notes:
         - break the field into sections
 
-        IF n - d > d (CHECKED)
+        IF n - d > d
         1st section (from x = 0 to x = d) is bounded at the bottom by the line y = -1*x + d and at the top by the line y = 1*x + d 
         2nd section (from x = d to x = n - d) is bounded at the top by the line y = 1*x + d and at the bottom by the line y = 1*x + (-d)
         3rd section (from x = n - d to x = n) is bounded at the top by the line y = -1*x + (2*n - d) and at the bottom by the line y = 1*x + (-d)
 
-        IF n - d = d (CHECKED)
+        IF n - d = d
         1st section (from x = 0 to x = n - d or x = d) is bounded at the bottom by the line y = -1*x + d and at the top by the line y = 1*x + d
         2nd section (from x = n - d or x = d to x = n) is bounded at the bottom by the line y = 1*x + (-d) and at the top by the line y = -1*x +(2*n - d)
 
@@ -54,72 +54,44 @@ int main(){
         3rd section (from x = d to x = n) is bounded at the bottom by y = 1*x + (-d) and at the top by the line y = -1*x + (2*n - d)
         */
 
+        bool inside = false;
+        // first case, where n - d > d
         if(n - d > d){
-            if(0 <= x && x <= d){
-                // check first section
-                if(-1*x + d <= y && y <= x + d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
-            } else if (d <= x && x <= n - d){
-                // check second section
-                if(x - d <= y && y <= x + d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
-            } else if (n - d <= x && x <= n){
-                // check third section
-                if(x - d <= y && y <= -1*x + 2*n - d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
-            } else{
-                cout << "NO" << endl;
+            if(0 <= x && x <= d && -1*x + d <= y && y <= x + d){
+                // within first section bounds
+                inside = true;
+            } else if (d <= x && x <= n - d && x - d <= y && y <= x + d){
+                // within second section bounds
+                inside = true;
+            } else if (n - d <= x && x <= n && x - d <= y && y <= -1*x + 2*n - d){
+                // within third section bounds
+                inside = true;
             }
         } else if(n - d == d){
-            if(0 <= x && x <= d){
-                // check first section
-                if(-1*x + d <= y && y <= x + d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
-            } else if(d <= x && x <= n){
-                // check second section
-                if(x - d <= y && y <= -1*x + 2*n - d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
-            } else{
-                cout << "NO" << endl;
+        // second case, where n - d = d (forming a square)
+            if(0 <= x && x <= d && -1*x + d <= y && y <= x + d){
+                // within first section bounds
+                inside = true;
+            } else if(d <= x && x <= n && x - d <= y && y <= -1*x + 2*n - d){
+                // within second section bounds
+                inside = true;
             }
         } else if (n - d < d){
-            if(0 <= x && x <= n - d){
-                // check first section
-                if(-1*x + d <= y && y <= x + d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
-            } else if(n - d <= x && x <= d){
-                // check second section
-                if(-1*x + d <= y && y <= -1*x + 2*n - d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
-            } else if(d <= x && x <= n){
-                // check third section
-                if(x - d <= y && y <= -1*x + 2*n - d){
-                    cout << "YES" << endl;
-                } else{
-                    cout << "NO" << endl;
-                }
+        // third case, where n - d < d
+            if(0 <= x && x <= n - d && -1*x + d <= y && y <= x + d){
+                // within first section bounds
+                inside = true;
+            } else if(n - d <= x && x <= d && -1*x + d <= y && y <= -1*x + 2*n - d){
+                // within second section bounds
+                inside = true;
+            } else if(d <= x && x <= n && x - d <= y && y <= -1*x + 2*n - d){
+                // within third section bounds
+                inside = true;
             }
         }
+
+        // output result
+        if(inside == true) cout << "YES" << endl;
+        else cout << "NO" << endl;
     }
 }
